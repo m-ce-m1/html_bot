@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="description" content="Как правильно создавать HTML-таблицы: caption, thead, tbody, tfoot, th, td, colspan, rowspan, доступность и советы для теста. Учебное руководство." />
+  <title>6. Построение структурированных таблиц</title>
+  <style>
+    :root {
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      --border-light: #e2e8f0;
+      --accent-blue: #1d4ed8;
+      --accent-dark: #1e40af;
+      --accent-green: #059669;
+      --note-bg: #f1f5f7;
+      --code-bg: #e0e7ff;
+      --code-border: #c7d2fe;
+      --pre-bg: #0f172a;
+      --pre-color: #e2e8f0;
+      --success-bg: #f0fdf4;
+      --info-bg: #f0f9ff;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      --shadow-hover: 0 6px 24px rgba(0, 0, 0, 0.08);
+      --radius: 12px;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      --font-mono: 'SF Mono', 'Courier New', monospace;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-page: #0f172a;
+        --bg-card: #1e293b;
+        --text-main: #f1f5f6;
+        --text-muted: #94a3b8;
+        --text-light: #cbd5e1;
+        --border-light: #334155;
+        --note-bg: #1e293b;
+        --code-bg: #1e3a8a;
+        --code-border: #3b82f6;
+        --pre-bg: #020617;
+        --success-bg: #0c2e20;
+        --info-bg: #0c2e5d;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      line-height: 1.7;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 40px;
+      box-shadow: var(--shadow);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .container {
+        animation: fadeIn 0.5s ease-out;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    h1 {
+      font-size: 2.3em;
+      font-weight: 800;
+      margin: 0 0 16px;
+      letter-spacing: -0.5px;
+      color: var(--accent-dark);
+    }
+
+    header p {
+      color: var(--text-muted);
+      margin: 10px 0 0;
+      font-size: 1.15em;
+      font-weight: 500;
+    }
+
+    h2 {
+      font-size: 1.55em;
+      margin: 48px 0 24px;
+      font-weight: 700;
+      color: var(--accent-blue);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    h2::before {
+      content: '';
+      width: 4px;
+      height: 24px;
+      background: linear-gradient(to bottom, var(--accent-blue), var(--accent-dark));
+      border-radius: 2px;
+    }
+
+    h3 {
+      font-size: 1.25em;
+      margin: 32px 0 16px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    p, ul, ol {
+      margin-bottom: 20px;
+      font-size: 1.02em;
+      line-height: 1.7;
+    }
+
+    code {
+      background: var(--code-bg);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.92em;
+      color: var(--accent-dark);
+      border: 1px solid var(--code-border);
+    }
+
+    pre {
+      background: var(--pre-bg);
+      color: var(--pre-color);
+      padding: 24px;
+      border-radius: var(--radius);
+      overflow-x: auto;
+      font-size: 0.95em;
+      margin: 28px 0;
+      line-height: 1.6;
+      font-family: var(--font-mono);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    ul, ol {
+      padding-left: 28px;
+    }
+
+    li {
+      margin-bottom: 10px;
+    }
+
+    a {
+      color: var(--accent-blue);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    a:hover {
+      color: var(--accent-dark);
+      text-decoration: underline;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin: 32px 0;
+      box-shadow: var(--shadow);
+      transition: all 0.25s ease;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-hover);
+        border-color: var(--accent-blue);
+      }
+    }
+
+    .note {
+      background: var(--note-bg);
+      border-left: 4px solid var(--accent-blue);
+      padding: 24px;
+      border-radius: 0 8px 8px 0;
+      margin: 28px 0;
+      font-size: 1.02em;
+    }
+
+    .tip {
+      background: var(--success-bg);
+      border-left: 4px solid var(--accent-green);
+      padding: 24px;
+      border-radius: 0 8px 8px 0;
+      margin: 28px 0;
+      font-size: 1.02em;
+    }
+
+    .info {
+      background: var(--info-bg);
+      border-left: 4px solid var(--accent-blue);
+      padding: 24px;
+      border-radius: 0 8px 8px 0;
+      margin: 28px 0;
+      font-size: 1.02em;
+      color: var(--text-main);
+    }
+
+    table.example {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 28px 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .example th,
+    .example td {
+      padding: 12px 14px;
+      text-align: left;
+      border: 1px solid var(--border-light);
+    }
+
+    .example thead {
+      background: #eff6ff;
+      color: var(--accent-dark);
+    }
+
+    .example tfoot {
+      background: var(--success-bg);
+      color: var(--accent-green);
+    }
+
+    .caption {
+      font-size: 0.92em;
+      color: var(--text-muted);
+      text-align: center;
+      margin: 12px 0 24px;
+      font-style: italic;
+      font-weight: 600;
+    }
+
+    footer {
+      margin-top: 60px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border-light);
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.95em;
+    }
+
+    .author-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 16px;
+      font-size: 1.05em;
+    }
+
+    .author-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-dark));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: white;
+      font-size: 1.2em;
+    }
+
+    .author-link {
+      color: var(--accent-blue);
+      text-decoration: none;
+      font-weight: 600;
+      position: relative;
+    }
+
+    .author-link:hover {
+      color: var(--accent-dark);
+    }
+
+    .author-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent-blue);
+      transition: width 0.3s ease;
+    }
+
+    .author-link:hover::after {
+      width: 100%;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border-light);
+      margin: 40px 0;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 24px;
+        border-radius: 12px;
+      }
+
+      h1 {
+        font-size: 1.8em;
+      }
+
+      h2 {
+        font-size: 1.35em;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      h2::before {
+        width: 24px;
+        height: 4px;
+      }
+
+      pre {
+        padding: 18px;
+        font-size: 0.88em;
+      }
+
+      .card, .note, .tip, .info {
+        padding: 24px;
+      }
+
+      .author-box {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .example th,
+      .example td {
+        padding: 10px;
+        font-size: 0.9em;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.5em;
+      }
+
+      .container {
+        padding: 16px;
+      }
+
+      pre {
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>6. Построение структурированных таблиц</h1>
+      <p>Как превратить хаотичные данные в понятную, доступную и красивую таблицу</p>
+    </header>
+
+    <main>
+      <p>
+        Таблица — не просто сетка. Это <strong>структурированные данные</strong>: цены, расписания, сравнения.  
+        Главное — не визуальное оформление, а <strong>правильная HTML-разметка</strong>.
+      </p>
+
+      <div class="card">
+        <h2>🧱 Основные части таблицы</h2>
+        <p>Любая правильная таблица состоит из:</p>
+        <ul>
+          <li><code>&lt;table&gt;</code> — корневой контейнер,</li>
+          <li><code>&lt;caption&gt;</code> — заголовок таблицы (очень важен для доступности!),</li>
+          <li><code>&lt;thead&gt;</code> — заголовки столбцов,</li>
+          <li><code>&lt;tbody&gt;</code> — основные данные,</li>
+          <li><code>&lt;tfoot&gt;</code> — итоги (может идти <em>до</em> <code>&lt;tbody&gt;</code> в коде!),</li>
+          <li><code>&lt;tr&gt;</code> — строка,</li>
+          <li><code>&lt;th&gt;</code> — ячейка-заголовок,</li>
+          <li><code>&lt;td&gt;</code> — ячейка с данными.</li>
+        </ul>
+      </div>
+
+      <h2>📌 Простой пример</h2>
+      <table class="example">
+        <caption>Расписание уроков</caption>
+        <thead>
+          <tr>
+            <th>Время</th>
+            <th>Понедельник</th>
+            <th>Вторник</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>9:00</td>
+            <td>Математика</td>
+            <td>Русский</td>
+          </tr>
+          <tr>
+            <td>10:00</td>
+            <td>Физика</td>
+            <td>История</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3">Уроки заканчиваются в 14:00</td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <pre>&lt;table&gt;
+  &lt;caption&gt;Расписание уроков&lt;/caption&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Время&lt;/th&gt;
+      &lt;th&gt;Понедельник&lt;/th&gt;
+      &lt;th&gt;Вторник&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;9:00&lt;/td&gt;
+      &lt;td&gt;Математика&lt;/td&gt;
+      &lt;td&gt;Русский&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+  &lt;tfoot&gt;
+    &lt;tr&gt;
+      &lt;td colspan="3"&gt;Уроки заканчиваются в 14:00&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tfoot&gt;
+&lt;/table&gt;</pre>
+
+      <div class="tip">
+        <h3>❗ Почему <code>caption</code> и <code>th</code> важны?</h3>
+        <p>Пользователи скринридеров <strong>полагаются</strong> на них, чтобы понять, о чём таблица.</p>
+        <p>Без <code>&lt;th&gt;</code> таблица — просто куча текста.</p>
+        <p>Для лучшей доступности у <code>&lt;th&gt;</code> можно указать направление:</p>
+        <pre>&lt;th scope="col"&gt;Имя&lt;/th&gt;  &lt;!-- заголовок столбца --&gt;
+&lt;th scope="row"&gt;Иван&lt;/th&gt;  &lt;!-- заголовок строки --&gt;</pre>
+      </div>
+
+      <h2>↔️ Объединение ячеек</h2>
+      <p>Иногда нужно объединить несколько ячеек в одну:</p>
+      <ul>
+        <li><code>colspan="N"</code> — объединить <strong>N столбцов</strong> по горизонтали,</li>
+        <li><code>rowspan="N"</code> — объединить <strong>N строк</strong> по вертикали.</li>
+      </ul>
+      <pre>&lt;td colspan="2"&gt;Эта ячейка занимает 2 столбца&lt;/td&gt;
+&lt;td rowspan="3"&gt;Эта — 3 строки&lt;/td&gt;</pre>
+
+      <div class="info">
+        <h3>🚫 Распространённые ошибки</h3>
+        <ul>
+          <li>Использовать таблицу для <strong>макета страницы</strong> — устарело (используйте CSS Grid/Flexbox).</li>
+          <li>Забывать <code>&lt;caption&gt;</code> — теряется контекст.</li>
+          <li>Писать данные в <code>&lt;th&gt;</code> — это только для заголовков.</li>
+          <li>Не использовать <code>&lt;thead&gt;</code>, <code>&lt;tbody&gt;</code> — усложняет стилизацию и доступность.</li>
+        </ul>
+      </div>
+
+      <h2>✅ Советы для теста</h2>
+      <ul>
+        <li><code>&lt;caption&gt;</code> должен идти <strong>сразу после</strong> <code>&lt;table&gt;</code>.</li>
+        <li><code>&lt;tfoot&gt;</code> может быть объявлен <strong>до</strong> <code>&lt;tbody&gt;</code> — браузер всё равно отобразит его внизу.</li>
+        <li>Ячейки <code>&lt;th&gt;</code> по умолчанию <strong>жирные и по центру</strong>, но это можно менять CSS.</li>
+        <li>Таблица — блочный элемент и растягивается на всю ширину по умолчанию.</li>
+        <li>Для сложных таблиц (много строк) — всегда используйте <code>scope</code> у <code>&lt;th&gt;</code>.</li>
+      </ul>
+
+      <div class="tip">
+        <h2>🌱 Начни так</h2>
+        <p>Для простой таблицы достаточно:</p>
+        <pre>&lt;table&gt;
+  &lt;caption&gt;Заголовок&lt;/caption&gt;
+  &lt;tr&gt;
+    &lt;th&gt;Заголовок 1&lt;/th&gt;
+    &lt;th&gt;Заголовок 2&lt;/th&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Данные&lt;/td&gt;
+    &lt;td&gt;Данные&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;</pre>
+        <p>Позже добавите <code>thead</code>/<code>tbody</code> — когда данные станут сложнее.</p>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="note">
+        📚 Этот материал — часть серии «Основы веб-разработки от А до Я». 
+        Подписывайтесь на канал <a href="https://t.me/markcodit" class="author-link" target="_blank" rel="noopener noreferrer">@markcodit</a>, 
+        где публикуются:
+        <ul style="margin-top: 12px; padding-left: 20px;">
+          <li>Пошаговые руководства по HTML, CSS, JS</li>
+          <li>Автоматизация рутинных задач</li>
+          <li>Telegram-боты и мини-игры</li>
+          <li>Полезные мемы для поддержания настроения 😊</li>
+        </ul>
+        <p style="margin-top: 12px;">
+          Нужна помощь с вашим проектом? Менеджер: 
+          <a href="https://t.me/programistotbo" class="author-link" target="_blank" rel="noopener noreferrer">@programistotbo</a>
+        </p>
+      </div>
+    </main>
+
+    <footer>
+      <div class="author-box">
+        <div class="author-logo">Ⓜ️</div>
+        <p>Материал подготовил <a href="https://t.me/markcodit" class="author-link" target="_blank" rel="noopener noreferrer">Цецерский Марк</a></p>
+      </div>
+      <p style="margin-top: 16px; font-size: 0.9em; color: var(--text-muted);">
+        Разработка проектов с нуля. Автоматизация, боты, игры + мемы для настроения 🎮
+      </p>
+    </footer>
+  </div>
+</body>
+</html>
+

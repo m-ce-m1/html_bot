@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="description" content="Как правильно вставлять изображения в HTML: тег img, alt, адаптивность, форматы (JPEG, PNG, WebP, SVG), lazy loading и доступность. Учебное руководство для начинающих." />
+  <title>3. Вставка и управление изображениями</title>
+  <style>
+    :root {
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      --border-light: #e2e8f0;
+      --accent-blue: #0ea5e9;
+      --accent-dark: #0284c7;
+      --accent-green: #059669;
+      --note-bg: #f1f5f7;
+      --code-bg: #f0f9ff;
+      --code-border: #bae6fd;
+      --pre-bg: #0f172a;
+      --pre-color: #e2e8f0;
+      --success-bg: #f0fdf4;
+      --warning-bg: #fffbeb;
+      --warning-border: #fde68a;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      --shadow-hover: 0 6px 24px rgba(0, 0, 0, 0.08);
+      --radius: 12px;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      --font-mono: 'SF Mono', 'Courier New', monospace;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-page: #0f172a;
+        --bg-card: #1e293b;
+        --text-main: #f1f5f6;
+        --text-muted: #94a3b8;
+        --text-light: #cbd5e1;
+        --border-light: #334155;
+        --note-bg: #1e293b;
+        --code-bg: #0c4a6e;
+        --code-border: #0ea5e9;
+        --pre-bg: #020617;
+        --success-bg: #0c2e20;
+        --warning-bg: #292524;
+        --warning-border: #d97706;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      line-height: 1.7;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 40px;
+      box-shadow: var(--shadow);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .container {
+        animation: fadeIn 0.5s ease-out;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    h1 {
+      font-size: 2.3em;
+      font-weight: 800;
+      margin: 0 0 16px;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-dark));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    header p {
+      color: var(--text-muted);
+      margin: 10px 0 0;
+      font-size: 1.15em;
+      font-weight: 500;
+    }
+
+    h2 {
+      font-size: 1.55em;
+      margin: 48px 0 24px;
+      font-weight: 700;
+      color: var(--accent-blue);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    h2::before {
+      content: '';
+      width: 4px;
+      height: 24px;
+      background: linear-gradient(to bottom, var(--accent-blue), var(--accent-dark));
+      border-radius: 2px;
+    }
+
+    h3 {
+      font-size: 1.25em;
+      margin: 32px 0 16px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    p, ul, ol {
+      margin-bottom: 20px;
+      font-size: 1.02em;
+      line-height: 1.7;
+    }
+
+    code {
+      background: var(--code-bg);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.92em;
+      color: var(--accent-dark);
+      border: 1px solid var(--code-border);
+    }
+
+    pre {
+      background: var(--pre-bg);
+      color: var(--pre-color);
+      padding: 24px;
+      border-radius: var(--radius);
+      overflow-x: auto;
+      font-size: 0.95em;
+      margin: 28px 0;
+      line-height: 1.6;
+      font-family: var(--font-mono);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    ul, ol {
+      padding-left: 28px;
+    }
+
+    li {
+      margin-bottom: 10px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin: 32px 0;
+      box-shadow: var(--shadow);
+      transition: all 0.25s ease;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-hover);
+        border-color: var(--accent-blue);
+      }
+    }
+
+    .note {
+      background: var(--note-bg);
+      border-left: 4px solid var(--accent-blue);
+      padding: 24px;
+      border-radius: 0 8px 8px 0;
+      margin: 28px 0;
+      font-size: 1.02em;
+    }
+
+    .tip {
+      background: var(--success-bg);
+      border-left: 4px solid var(--accent-green);
+      padding: 24px;
+      border-radius: 0 8px 8px 0;
+      margin: 28px 0;
+      font-size: 1.02em;
+    }
+
+    .warning {
+      background: var(--warning-bg);
+      border-left: 4px solid var(--warning-border);
+      padding: 24px;
+      border-radius: 0 8px 8px 0;
+      margin: 28px 0;
+      font-size: 1.02em;
+      color: var(--text-main);
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      margin: 24px 0;
+      border: 1px solid var(--border-light);
+      display: block;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    .caption {
+      font-size: 0.92em;
+      color: var(--text-muted);
+      text-align: center;
+      margin: 12px 0 24px;
+      font-style: italic;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 28px 0;
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-light);
+    }
+
+    th, td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    th {
+      background: var(--note-bg);
+      font-weight: 600;
+      color: var(--accent-blue);
+      font-size: 1.02em;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover {
+      background: rgba(14, 165, 233, 0.05);
+    }
+
+    footer {
+      margin-top: 60px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border-light);
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.95em;
+    }
+
+    .author-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 16px;
+      font-size: 1.05em;
+    }
+
+    .author-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-dark));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: white;
+      font-size: 1.2em;
+    }
+
+    .author-link {
+      color: var(--accent-blue);
+      text-decoration: none;
+      font-weight: 600;
+      position: relative;
+    }
+
+    .author-link:hover {
+      color: var(--accent-dark);
+    }
+
+    .author-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent-blue);
+      transition: width 0.3s ease;
+    }
+
+    .author-link:hover::after {
+      width: 100%;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border-light);
+      margin: 40px 0;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 24px;
+        border-radius: 12px;
+      }
+
+      h1 {
+        font-size: 1.8em;
+      }
+
+      h2 {
+        font-size: 1.35em;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      h2::before {
+        width: 24px;
+        height: 4px;
+      }
+
+      pre {
+        padding: 18px;
+        font-size: 0.88em;
+      }
+
+      .card, .note, .tip, .warning {
+        padding: 24px;
+      }
+
+      .author-box {
+        flex-direction: column;
+        gap: 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.5em;
+      }
+
+      .container {
+        padding: 16px;
+      }
+
+      pre {
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>3. Вставка и управление изображениями</h1>
+      <p>Как правильно добавить картинку, чтобы она загружалась быстро, выглядела хорошо и была доступна всем</p>
+    </header>
+
+    <main>
+      <p>
+        Изображения делают страницу живой. Но просто вставить картинку — мало.  
+        Нужно подумать о:
+      </p>
+      <ul>
+        <li>📱 <strong>Мобильных устройствах</strong> — чтобы не грузилось 5 МБ на телефоне,</li>
+        <li>👁️ <strong>Доступности</strong> — чтобы слепые пользователи «услышали» картинку,</li>
+        <li>⚡ <strong>Скорости загрузки</strong> — ленивая загрузка, правильный формат.</li>
+      </ul>
+
+      <div class="card">
+        <h2>🖼️ Базовый тег: <code>&lt;img&gt;</code></h2>
+        <p>Это <strong>самозакрывающийся</strong> тег — не нужно писать <code>&lt;/img&gt;</code>.</p>
+        <p>Обязательные атрибуты:</p>
+        <ul>
+          <li><code>src</code> — путь к изображению,</li>
+          <li><code>alt</code> — текстовое описание (даже если картинка декоративная!).</li>
+        </ul>
+      </div>
+
+      <h3>Пример простой картинки</h3>
+      <svg width="100%" height="200" viewBox="0 0 500 200" xmlns="http://www.w3.org/2000/svg" style="background:var(--note-bg); border-radius:10px; border:1px solid var(--border-light); display:block; margin:24px 0;">
+        <rect width="500" height="200" rx="10" fill="none" stroke="none"/>
+        <circle cx="120" cy="100" r="30" fill="#0ea5e9" opacity="0.8"/>
+        <circle cx="250" cy="100" r="30" fill="#0284c7" opacity="0.8"/>
+        <circle cx="380" cy="100" r="30" fill="#0f766e" opacity="0.8"/>
+        <text x="250" y="170" font-family="var(--font-sans)" font-size="18" fill="var(--text-main)" text-anchor="middle" font-weight="600">Пример изображения</text>
+      </svg>
+      <pre>&lt;img src="photo.jpg" alt="Фото заката над морем" width="400" height="200"&gt;</pre>
+      <p class="caption">Атрибуты <code>width</code> и <code>height</code> помогают избежать «прыжков» макета при загрузке</p>
+
+      <div class="note">
+        <h3>❗ Почему <code>alt</code> так важен?</h3>
+        <p>Если картинка не загрузится — пользователь увидит <code>alt</code>-текст.</p>
+        <p>Если человек использует скринридер — он <em>услышит</em> этот текст.</p>
+        <ul>
+          <li>Смысловая картинка: <code>alt="Щенок играет с мячом"</code></li>
+          <li>Декоративная картинка: <code>alt=""</code> (пустой, но обязательно должен быть!)</li>
+        </ul>
+      </div>
+
+      <h2>📱 Адаптивные изображения</h2>
+      <p>Одно изображение не подходит всем: телефону нужно меньше данных, чем десктопу.</p>
+
+      <h3>Вариант 1: <code>srcset</code> — для разных DPI</h3>
+      <p>Подходит, когда это <strong>одна и та же картинка</strong>, но в разных разрешениях:</p>
+      <pre>&lt;img 
+  src="image-400.jpg"
+  srcset="image-400.jpg 1x, image-800.jpg 2x"
+  alt="Адаптивное изображение"&gt;</pre>
+      <p>Браузер сам выберет: <code>1x</code> — обычный экран, <code>2x</code> — Retina / HiDPI.</p>
+
+      <h3>Вариант 2: <code>&lt;picture&gt;</code> — для разных макетов</h3>
+      <p>Используйте, когда <strong>на мобильном и десктопе разные композиции</strong>:</p>
+      <pre>&lt;picture&gt;
+  &lt;source media="(max-width: 600px)" srcset="mobile.jpg"&gt;
+  &lt;source media="(min-width: 601px)" srcset="desktop.jpg"&gt;
+  &lt;img src="fallback.jpg" alt="Изображение"&gt;
+&lt;/picture&gt;</pre>
+      <div class="warning">
+        <strong>Важно:</strong> Внутри <code>&lt;picture&gt;</code> всегда должен быть <code>&lt;img&gt;</code> — это fallback для старых браузеров.
+      </div>
+
+      <h2>🔍 Форматы изображений: какой выбрать?</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Формат</th>
+            <th>Когда использовать</th>
+            <th>Плюсы</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>JPEG</strong></td>
+            <td>Фотографии</td>
+            <td>Маленький размер, плавные градиенты</td>
+          </tr>
+          <tr>
+            <td><strong>PNG</strong></td>
+            <td>Логотипы, иконки, прозрачность</td>
+            <td>Поддержка прозрачности, чёткие края</td>
+          </tr>
+          <tr>
+            <td><strong>GIF</strong></td>
+            <td>Простая анимация</td>
+            <td>Анимация, но мало цветов</td>
+          </tr>
+          <tr>
+            <td><strong>WebP</strong></td>
+            <td>Всё подряд (современный выбор)</td>
+            <td>На 30% меньше размер, чем JPEG/PNG</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="tip">
+        <h3>💡 Совет</h3>
+        <p>Если можете — используйте <strong>WebP</strong>.  
+          Но добавьте fallback для старых браузеров через <code>&lt;picture&gt;</code>:</p>
+        <pre>&lt;picture&gt;
+  &lt;source srcset="image.webp" type="image/webp"&gt;
+  &lt;img src="image.jpg" alt="Картинка"&gt;
+&lt;/picture&gt;</pre>
+      </div>
+
+      <h2>🧩 SVG — векторные изображения</h2>
+      <p>Логотипы, иконки, диаграммы — всё это можно сделать вектором:</p>
+      <pre>&lt;img src="logo.svg" alt="Логотип компании"&gt;</pre>
+      <p>SVG масштабируется без потерь и весит мало.</p>
+      <svg width="100%" height="150" viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg" style="display:block; margin:24px auto; max-width:200px;">
+        <circle cx="100" cy="75" r="60" fill="url(#svgGrad)"/>
+        <defs>
+          <linearGradient id="svgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#0ea5e9; stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#0284c7; stop-opacity:1" />
+          </linearGradient>
+        </defs>
+        <path d="M 60 75 L 90 105 L 140 45" stroke="white" stroke-width="6" fill="none" stroke-linecap="round"/>
+      </svg>
+      <p class="caption">Даже при увеличении — края остаются чёткими</p>
+
+      <h2>✅ Правила для теста</h2>
+      <ul>
+        <li><code>&lt;img&gt;</code> — самозакрывающийся тег.</li>
+        <li><code>alt</code> — обязателен (даже если пустой: <code>alt=""</code>).</li>
+        <li><code>width</code> и <code>height</code> в HTML указываются <strong>без px</strong>: <code>width="300"</code>.</li>
+        <li><code>loading="lazy"</code> — откладывает загрузку до прокрутки к картинке.</li>
+        <li>В <code>&lt;picture&gt;</code> используется <code>&lt;source&gt;</code>, но обязательно есть <code>&lt;img&gt;</code>.</li>
+        <li>WebP — современный формат, но требует fallback.</li>
+      </ul>
+
+      <div class="tip">
+        <h2>🌱 Начни так</h2>
+        <p>Для первой страницы достаточно:</p>
+        <pre>&lt;img src="photo.jpg" alt="Описание" loading="lazy"&gt;</pre>
+        <p>Позже добавите адаптивность — когда поймёте основы.</p>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="note">
+        📚 Этот материал — часть серии «Основы веб-разработки от А до Я». 
+        Подписывайтесь на канал <a href="https://t.me/markcodit" class="author-link" target="_blank" rel="noopener noreferrer">@markcodit</a>, 
+        где публикуются:
+        <ul style="margin-top: 12px; padding-left: 20px;">
+          <li>Пошаговые руководства по HTML, CSS, JS</li>
+          <li>Автоматизация рутинных задач</li>
+          <li>Telegram-боты и мини-игры</li>
+          <li>Полезные мемы для поддержания настроения 😊</li>
+        </ul>
+        <p style="margin-top: 12px;">
+          Нужна помощь с вашим проектом? Менеджер: 
+          <a href="https://t.me/programistotbo" class="author-link" target="_blank" rel="noopener noreferrer">@programistotbo</a>
+        </p>
+      </div>
+    </main>
+
+    <footer>
+      <div class="author-box">
+        <div class="author-logo">Ⓜ️</div>
+        <p>Материал подготовил <a href="https://t.me/markcodit" class="author-link" target="_blank" rel="noopener noreferrer">Цецерский Марк</a></p>
+      </div>
+      <p style="margin-top: 16px; font-size: 0.9em; color: var(--text-muted);">
+        Разработка проектов с нуля. Автоматизация, боты, игры + мемы для настроения 🎮
+      </p>
+    </footer>
+  </div>
+</body>
+</html>
+

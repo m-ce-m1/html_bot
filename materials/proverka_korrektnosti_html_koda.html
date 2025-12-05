@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="description" content="Как проверить HTML на валидность с помощью W3C Validator: зачем это нужно, типичные ошибки, правила для теста и советы по SEO и доступности." />
+  <title>9. Проверка корректности HTML-кода (валидация)</title>
+  <style>
+    :root {
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      --border-light: #e2e8f0;
+      --accent-blue: #1d4ed8;
+      --accent-dark: #1e40af;
+      --accent-green: #059669;
+      --note-bg: #f1f5f7;
+      --code-bg: #e0e7ff;
+      --code-border: #c7d2fe;
+      --pre-bg: #0f172a;
+      --pre-color: #e2e8f0;
+      --success-bg: #f0fdf4;
+      --warning-bg: #fffbeb;
+      --warning-border: #fde68a;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      --shadow-hover: 0 6px 24px rgba(0, 0, 0, 0.08);
+      --radius: 12px;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      --font-mono: 'SF Mono', 'Courier New', monospace;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-page: #0f172a;
+        --bg-card: #1e293b;
+        --text-main: #f1f5f6;
+        --text-muted: #94a3b8;
+        --text-light: #cbd5e1;
+        --border-light: #334155;
+        --note-bg: #1e293b;
+        --code-bg: #1e3a8a;
+        --code-border: #3b82f6;
+        --pre-bg: #020617;
+        --success-bg: #0c2e20;
+        --warning-bg: #292524;
+        --warning-border: #d97706;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      line-height: 1.7;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 40px;
+      box-shadow: var(--shadow);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .container {
+        animation: fadeIn 0.5s ease-out;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    h1 {
+      font-size: 2.3em;
+      font-weight: 800;
+      margin: 0 0 16px;
+      letter-spacing: -0.5px;
+      color: var(--accent-dark);
+    }
+
+    header p {
+      color: var(--text-muted);
+      margin: 10px 0 0;
+      font-size: 1.15em;
+      font-weight: 500;
+    }
+
+    h2 {
+      font-size: 1.55em;
+      margin: 48px 0 24px;
+      font-weight: 700;
+      color: var(--accent-blue);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    h2::before {
+      content: '';
+      width: 4px;
+      height: 24px;
+      background: linear-gradient(to bottom, var(--accent-blue), var(--accent-dark));
+      border-radius: 2px;
+    }
+
+    h3 {
+      font-size: 1.25em;
+      margin: 32px 0 16px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    p, ul, ol {
+      margin-bottom: 20px;
+      font-size: 1.02em;
+      line-height: 1.7;
+    }
+
+    code {
+      background: var(--code-bg);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.92em;
+      color: var(--accent-dark);
+      border: 1px solid var(--code-border);
+    }
+
+    pre {
+      background: var(--pre-bg);
+      color: var(--pre-color);
+      padding: 24px;
+      border-radius: var(--radius);
+      overflow-x: auto;
+      font-size: 0.95em;
+      margin: 28px 0;
+      line-height: 1.6;
+      font-family: var(--font-mono);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    ul, ol {
+      padding-left: 28px;
+    }
+
+    li {
+      margin-bottom: 10px;
+    }
+
+    a {
+      color: var(--accent-blue);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    a:hover {
+      color: var(--accent-dark);
+      text-decoration: underline;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin: 32px 0;
+      box-shadow: var(--shadow);
+      transition: all 0.25s ease;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-hover);
+        border-color: var(--accent-blue);
+      }
+    }
+
+    .note {
+      background: var(--note-bg);
+      border-left: 4px solid var(--accent-blue);
+      padding: 24px;
+      border-radius: 0 8px 8px 0;
+      margin: 28px 0;
+      font-size: 1.02em;
+    }
+
+    .tip {
+      background: var(--success-bg);
+      border-left: 4px solid var(--accent-green);
+      padding: 24px;
+      border-radius: 0 8px 8px 0;
+      margin: 28px 0;
+      font-size: 1.02em;
+    }
+
+    .warning {
+      background: var(--warning-bg);
+      border-left: 4px solid var(--warning-border);
+      padding: 24px;
+      border-radius: 0 8px 8px 0;
+      margin: 28px 0;
+      font-size: 1.02em;
+      color: var(--text-main);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 28px 0;
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-light);
+    }
+
+    th, td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    th {
+      background: var(--warning-bg);
+      font-weight: 600;
+      color: #92400e;
+      font-size: 1.02em;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover {
+      background: rgba(29, 78, 216, 0.05);
+    }
+
+    .caption {
+      font-size: 0.92em;
+      color: var(--text-muted);
+      text-align: center;
+      margin: 12px 0 24px;
+      font-style: italic;
+    }
+
+    .conclusion {
+      text-align: center;
+      margin-top: 36px;
+      color: var(--text-muted);
+      font-size: 1.02em;
+      font-style: italic;
+    }
+
+    footer {
+      margin-top: 60px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border-light);
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.95em;
+    }
+
+    .author-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 16px;
+      font-size: 1.05em;
+    }
+
+    .author-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-dark));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: white;
+      font-size: 1.2em;
+    }
+
+    .author-link {
+      color: var(--accent-blue);
+      text-decoration: none;
+      font-weight: 600;
+      position: relative;
+    }
+
+    .author-link:hover {
+      color: var(--accent-dark);
+    }
+
+    .author-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent-blue);
+      transition: width 0.3s ease;
+    }
+
+    .author-link:hover::after {
+      width: 100%;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border-light);
+      margin: 40px 0;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 24px;
+        border-radius: 12px;
+      }
+
+      h1 {
+        font-size: 1.8em;
+      }
+
+      h2 {
+        font-size: 1.35em;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      h2::before {
+        width: 24px;
+        height: 4px;
+      }
+
+      pre {
+        padding: 18px;
+        font-size: 0.88em;
+      }
+
+      .card, .note, .tip, .warning {
+        padding: 24px;
+      }
+
+      .author-box {
+        flex-direction: column;
+        gap: 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.5em;
+      }
+
+      .container {
+        padding: 16px;
+      }
+
+      pre {
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>9. Проверка корректности HTML-кода (валидация)</h1>
+      <p>Как убедиться, что ваш HTML соответствует стандартам — и почему это важно</p>
+    </header>
+
+    <main>
+      <p>
+        Валидация — это проверка HTML-кода на соответствие официальным стандартам W3C.  
+        Это <strong>не про идеальный код</strong>, а про <strong>предсказуемость</strong>:  
+        чтобы ваша страница работала везде — сегодня и через 10 лет.
+      </p>
+
+      <div class="tip">
+        <h3>🔍 Зачем проходить валидацию?</h3>
+        <ul>
+          <li><strong>Браузеры</strong> могут по-разному исправлять ошибки → макет «едет» в некоторых браузерах.</li>
+          <li><strong>Поисковики</strong> лучше индексируют корректный HTML → выше SEO.</li>
+          <li><strong>Скринридеры</strong> точнее интерпретируют структуру → выше доступность.</li>
+          <li><strong>Поддержка кода</strong> проще — меньше скрытых багов.</li>
+        </ul>
+      </div>
+
+      <h2>✅ Официальный инструмент: W3C Validator</h2>
+      <div class="note">
+        <p>Бесплатный сервис от консорциума W3C:</p>
+        <p><a href="https://validator.w3.org/" target="_blank" rel="noopener noreferrer">https://validator.w3.org/</a></p>
+        <p>Вы можете:</p>
+        <ul>
+          <li>вставить код напрямую,</li>
+          <li>указать URL страницы,</li>
+          <li>загрузить HTML-файл.</li>
+        </ul>
+        <p>Результат: список ошибок (красные) и предупреждений (жёлтые).</p>
+      </div>
+
+      <h2>🔴 Типичные ошибки и как их исправить</h2>
+      <div class="warning">
+        <table>
+          <thead>
+            <tr>
+              <th>Ошибка</th>
+              <th>Как исправить</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Отсутствует <code>&lt;!DOCTYPE html&gt;</code></td><td>Добавить первой строкой</td></tr>
+            <tr><td>Нет <code>&lt;title&gt;</code> в <code>&lt;head&gt;</code></td><td>Добавить: <code>&lt;title&gt;Заголовок&lt;/title&gt;</code></td></tr>
+            <tr><td>У <code>&lt;img&gt;</code> нет <code>alt</code></td><td>Добавить: <code>alt="Описание"</code> или <code>alt=""</code></td></tr>
+            <tr><td>Непарные теги: лишний <code>&lt;/div&gt;</code></td><td>Проверить вложенность, использовать редактор с подсветкой</td></tr>
+            <tr><td>Дублирующиеся <code>id</code></td><td>Каждый <code>id</code> должен быть уникальным на странице</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>⚠️ Устаревшие теги и атрибуты</h2>
+      <p>Эти элементы <strong>вызовут ошибку</strong> в валидаторе:</p>
+      <ul>
+        <li><code>&lt;font&gt;</code>, <code>&lt;center&gt;</code>, <code>&lt;strike&gt;</code></li>
+        <li>Атрибуты: <code>bgcolor</code>, <code>align</code>, <code>border</code> (у таблиц)</li>
+      </ul>
+      <p>Вместо них используйте <strong>CSS</strong>.</p>
+
+      <h2>💡 Не всё — критично</h2>
+      <p>Некоторые предупреждения можно игнорировать, если вы уверены в своём выборе:</p>
+      <ul>
+        <li>Использование <code>&lt;div&gt;</code> вместо семантического тега — предупреждение, не ошибка.</li>
+        <li>Отсутствие атрибута <code>lang</code> в <code>&lt;html&gt;</code> — снижает доступность, но не ломает страницу.</li>
+      </ul>
+      <p>Но <strong>ошибки</strong> (красные) лучше всегда исправлять.</p>
+
+      <h2>✅ Правила, которые всегда работают</h2>
+      <ul>
+        <li>Первая строка — <code>&lt;!DOCTYPE html&gt;</code>.</li>
+        <li>Есть один <code>&lt;html&gt;</code>, один <code>&lt;head&gt;</code>, один <code>&lt;body&gt;</code>.</li>
+        <li>Внутри <code>&lt;head&gt;</code> — <code>&lt;meta charset="UTF-8"&gt;</code> и <code>&lt;title&gt;</code>.</li>
+        <li>У каждого <code>&lt;img&gt;</code> есть <code>alt</code>.</li>
+        <li>У всех тегов правильная вложенность и парность.</li>
+      </ul>
+
+      <div class="tip">
+        <h2>🌱 Проверь себя перед сдачей</h2>
+        <p>Скопируй свой HTML в <a href="https://validator.w3.org/#validate_by_input" target="_blank" rel="noopener noreferrer">W3C Validator (ввод кода)</a>.</p>
+        <p>Если нет <strong>красных ошибок</strong> — ты молодец!</p>
+        <p>Жёлтые предупреждения — можно оставить, если понимаешь последствия.</p>
+      </div>
+
+      <p class="conclusion">
+        Поздравляем! Теперь ты знаешь всё, что нужно для создания <strong>корректных, доступных и современных</strong> HTML-страниц.
+      </p>
+
+      <div class="divider"></div>
+
+      <div class="note">
+        📚 Этот материал — часть серии «Основы веб-разработки от А до Я». 
+        Подписывайтесь на канал <a href="https://t.me/markcodit" class="author-link" target="_blank" rel="noopener noreferrer">@markcodit</a>, 
+        где публикуются:
+        <ul style="margin-top: 12px; padding-left: 20px;">
+          <li>Пошаговые руководства по HTML, CSS, JS</li>
+          <li>Автоматизация рутинных задач</li>
+          <li>Telegram-боты и мини-игры</li>
+          <li>Полезные мемы для поддержания настроения 😊</li>
+        </ul>
+        <p style="margin-top: 12px;">
+          Нужна помощь с вашим проектом? Менеджер: 
+          <a href="https://t.me/programistotbo" class="author-link" target="_blank" rel="noopener noreferrer">@programistotbo</a>
+        </p>
+      </div>
+    </main>
+
+    <footer>
+      <div class="author-box">
+        <div class="author-logo">Ⓜ️</div>
+        <p>Материал подготовил <a href="https://t.me/markcodit" class="author-link" target="_blank" rel="noopener noreferrer">Цецерский Марк</a></p>
+      </div>
+      <p style="margin-top: 16px; font-size: 0.9em; color: var(--text-muted);">
+        Разработка проектов с нуля. Автоматизация, боты, игры + мемы для настроения 🎮
+      </p>
+    </footer>
+  </div>
+</body>
+</html>
+

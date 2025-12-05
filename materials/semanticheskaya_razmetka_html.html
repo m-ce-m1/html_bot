@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="description" content="Семантическая разметка HTML: зачем нужны теги header, nav, main, article, section, aside, footer — и как их правильно использовать для SEO, доступности и читаемости кода." />
+  <title>8. Семантическая разметка HTML</title>
+  <style>
+    :root {
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      --border-light: #e2e8f0;
+      --accent-blue: #1d4ed8;
+      --accent-dark: #1e40af;
+      --accent-green: #059669;
+      --note-bg: #f1f5f7;
+      --code-bg: #e0e7ff;
+      --code-border: #c7d2fe;
+      --pre-bg: #0f172a;
+      --pre-color: #e2e8f0;
+      --success-bg: #f0fdf4;
+      --warning-bg: #fffbeb;
+      --warning-border: #fde68a;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      --shadow-hover: 0 6px 24px rgba(0, 0, 0, 0.08);
+      --radius: 12px;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      --font-mono: 'SF Mono', 'Courier New', monospace;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-page: #0f172a;
+        --bg-card: #1e293b;
+        --text-main: #f1f5f6;
+        --text-muted: #94a3b8;
+        --text-light: #cbd5e1;
+        --border-light: #334155;
+        --note-bg: #1e293b;
+        --code-bg: #1e3a8a;
+        --code-border: #3b82f6;
+        --pre-bg: #020617;
+        --success-bg: #0c2e20;
+        --warning-bg: #292524;
+        --warning-border: #d97706;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      line-height: 1.7;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 40px;
+      box-shadow: var(--shadow);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .container {
+        animation: fadeIn 0.5s ease-out;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    h1 {
+      font-size: 2.3em;
+      font-weight: 800;
+      margin: 0 0 16px;
+      letter-spacing: -0.5px;
+      color: var(--accent-dark);
+    }
+
+    header p {
+      color: var(--text-muted);
+      margin: 10px 0 0;
+      font-size: 1.15em;
+      font-weight: 500;
+    }
+
+    h2 {
+      font-size: 1.55em;
+      margin: 48px 0 24px;
+      font-weight: 700;
+      color: var(--accent-blue);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    h2::before {
+      content: '';
+      width: 4px;
+      height: 24px;
+      background: linear-gradient(to bottom, var(--accent-blue), var(--accent-dark));
+      border-radius: 2px;
+    }
+
+    h3 {
+      font-size: 1.25em;
+      margin: 32px 0 16px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    p, ul, ol {
+      margin-bottom: 20px;
+      font-size: 1.02em;
+      line-height: 1.7;
+    }
+
+    code {
+      background: var(--code-bg);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.92em;
+      color: var(--accent-dark);
+      border: 1px solid var(--code-border);
+    }
+
+    pre {
+      background: var(--pre-bg);
+      color: var(--pre-color);
+      padding: 24px;
+      border-radius: var(--radius);
+      overflow-x: auto;
+      font-size: 0.95em;
+      margin: 28px 0;
+      line-height: 1.6;
+      font-family: var(--font-mono);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    ul, ol {
+      padding-left: 28px;
+    }
+
+    li {
+      margin-bottom: 10px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin: 32px 0;
+      box-shadow: var(--shadow);
+      transition: all 0.25s ease;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-hover);
+        border-color: var(--accent-blue);
+      }
+    }
+
+    .note {
+      background: var(--note-bg);
+      border-left: 4px solid var(--accent-blue);
+      padding: 24px;
+      border-radius: 0 8px 8px 0;
+      margin: 28px 0;
+      font-size: 1.02em;
+    }
+
+    .tip {
+      background: var(--success-bg);
+      border-left: 4px solid var(--accent-green);
+      padding: 24px;
+      border-radius: 0 8px 8px 0;
+      margin: 28px 0;
+      font-size: 1.02em;
+    }
+
+    .warning {
+      background: var(--warning-bg);
+      border-left: 4px solid var(--warning-border);
+      padding: 24px;
+      border-radius: 0 8px 8px 0;
+      margin: 28px 0;
+      font-size: 1.02em;
+      color: var(--text-main);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 28px 0;
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-light);
+    }
+
+    th, td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    th {
+      background: var(--note-bg);
+      font-weight: 600;
+      color: var(--accent-blue);
+      font-size: 1.02em;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover {
+      background: rgba(29, 78, 216, 0.05);
+    }
+
+    .caption {
+      font-size: 0.92em;
+      color: var(--text-muted);
+      text-align: center;
+      margin: 12px 0 24px;
+      font-style: italic;
+    }
+
+    footer {
+      margin-top: 60px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border-light);
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.95em;
+    }
+
+    .author-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 16px;
+      font-size: 1.05em;
+    }
+
+    .author-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-dark));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: white;
+      font-size: 1.2em;
+    }
+
+    .author-link {
+      color: var(--accent-blue);
+      text-decoration: none;
+      font-weight: 600;
+      position: relative;
+    }
+
+    .author-link:hover {
+      color: var(--accent-dark);
+    }
+
+    .author-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent-blue);
+      transition: width 0.3s ease;
+    }
+
+    .author-link:hover::after {
+      width: 100%;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border-light);
+      margin: 40px 0;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 24px;
+        border-radius: 12px;
+      }
+
+      h1 {
+        font-size: 1.8em;
+      }
+
+      h2 {
+        font-size: 1.35em;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      h2::before {
+        width: 24px;
+        height: 4px;
+      }
+
+      pre {
+        padding: 18px;
+        font-size: 0.88em;
+      }
+
+      .card, .note, .tip, .warning {
+        padding: 24px;
+      }
+
+      .author-box {
+        flex-direction: column;
+        gap: 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.5em;
+      }
+
+      .container {
+        padding: 16px;
+      }
+
+      pre {
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>8. Семантическая разметка HTML</h1>
+      <p>Как писать HTML так, чтобы его понимали и машины, и люди</p>
+    </header>
+
+    <main>
+      <p>
+        Раньше все страницы строились на <code>&lt;div&gt;</code> и <code>&lt;span&gt;</code>.  
+        Сегодня — есть <strong>семантические теги</strong>: они говорят не только «как выглядит», но и «что это значит».
+      </p>
+
+      <div class="tip">
+        <h3>🧠 Зачем это нужно?</h3>
+        <ul>
+          <li><strong>Поисковики</strong> лучше понимают структуру страницы → выше в выдаче.</li>
+          <li><strong>Скринридеры</strong> озвучивают контент правильно (для слепых пользователей).</li>
+          <li><strong>Разработчикам</strong> легче поддерживать код — структура очевидна.</li>
+          <li><strong>Браузеры</strong> могут предлагать улучшенные функции (например, оглавление).</li>
+        </ul>
+      </div>
+
+      <h2>🧱 Основные семантические теги</h2>
+      <div class="card">
+        <table>
+          <thead>
+            <tr>
+              <th>Тег</th>
+              <th>Назначение</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>&lt;header&gt;</code></td><td>Шапка страницы или секции (логотип, заголовок)</td></tr>
+            <tr><td><code>&lt;nav&gt;</code></td><td>Основное меню навигации</td></tr>
+            <tr><td><code>&lt;main&gt;</code></td><td>Главная уникальная часть страницы (только один на странице!)</td></tr>
+            <tr><td><code>&lt;article&gt;</code></td><td>Независимый контент: статья, пост, отзыв</td></tr>
+            <tr><td><code>&lt;section&gt;</code></td><td>Тематическая группа контента (обычно с заголовком)</td></tr>
+            <tr><td><code>&lt;aside&gt;</code></td><td>Дополнительный контент: реклама, цитаты, ссылки</td></tr>
+            <tr><td><code>&lt;footer&gt;</code></td><td>Подвал страницы или секции</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>🖼️ Схема типичной страницы</h2>
+      <pre>&lt;body&gt;
+  &lt;header&gt;Логотип, заголовок&lt;/header&gt;
+  
+  &lt;nav&gt;Меню&lt;/nav&gt;
+  
+  &lt;main&gt;
+    &lt;article&gt;Основная статья&lt;/article&gt;
+    
+    &lt;aside&gt;Реклама или ссылки&lt;/aside&gt;
+  &lt;/main&gt;
+  
+  &lt;footer&gt;Контакты, копирайт&lt;/footer&gt;
+&lt;/body&gt;</pre>
+      <p class="caption">Каждый блок — не просто “div”, а смысловая единица</p>
+
+      <h2>🔄 Сравнение: старый vs новый подход</h2>
+      <div class="note">
+        <p><strong>Без семантики:</strong></p>
+        <pre>&lt;div id="top"&gt;...&lt;/div&gt;
+&lt;div class="menu"&gt;...&lt;/div&gt;
+&lt;div class="content"&gt;...&lt;/div&gt;
+&lt;div class="sidebar"&gt;...&lt;/div&gt;
+&lt;div class="bottom"&gt;...&lt;/div&gt;</pre>
+
+        <p><strong>С семантикой:</strong></p>
+        <pre>&lt;header&gt;...&lt;/header&gt;
+&lt;nav&gt;...&lt;/nav&gt;
+&lt;main&gt;...&lt;/main&gt;
+&lt;aside&gt;...&lt;/aside&gt;
+&lt;footer&gt;...&lt;/footer&gt;</pre>
+        <p>Код стал короче, понятнее и мощнее.</p>
+      </div>
+
+      <h2>📍 Когда использовать <code>&lt;section&gt;</code>, а когда <code>&lt;article&gt;</code>?</h2>
+      <ul>
+        <li><strong><code>&lt;article&gt;</code></strong> — если контент можно <em>опубликовать отдельно</em> (в RSS, в соцсетях).</li>
+        <li><strong><code>&lt;section&gt;</code></strong> — если это просто <em>часть целого</em> (глава в книге, блок описания).</li>
+      </ul>
+      <p>Пример:</p>
+      <pre>&lt;article&gt;
+  &lt;h2&gt;Новость про HTML&lt;/h2&gt;
+  &lt;section&gt;
+    &lt;h3&gt;История&lt;/h3&gt;
+    &lt;p&gt;...&lt;/p&gt;
+  &lt;/section&gt;
+  &lt;section&gt;
+    &lt;h3&gt;Современность&lt;/h3&gt;
+    &lt;p&gt;...&lt;/p&gt;
+  &lt;/section&gt;
+&lt;/article&gt;</pre>
+
+      <div class="warning">
+        <h3>🚫 Распространённые ошибки</h3>
+        <ul>
+          <li>Использовать <code>&lt;main&gt;</code> несколько раз на странице — можно только один.</li>
+          <li>Оборачивать всё в <code>&lt;section&gt;</code> «на всякий случай» — это не разделитель!</li>
+          <li>Заменять <code>&lt;button&gt;</code> на <code>&lt;div onclick="..."&gt;</code> — ломает доступность.</li>
+          <li>Игнорировать семантику ради «удобства» — это технический долг.</li>
+        </ul>
+      </div>
+
+      <h2>✅ Советы для теста</h2>
+      <ul>
+        <li><code>&lt;header&gt;</code> и <code>&lt;footer&gt;</code> можно использовать <strong>внутри</strong> <code>&lt;article&gt;</code> или <code>&lt;section&gt;</code>.</li>
+        <li><code>&lt;nav&gt;</code> — только для основных навигационных блоков (не для «читать далее»).</li>
+        <li><code>&lt;div&gt;</code> по-прежнему нужен — для стилей и скриптов, но не для смысла.</li>
+        <li>Семантические теги <strong>не влияют</strong> на внешний вид (это работа CSS).</li>
+        <li>Страница без <code>&lt;main&gt;</code> — возможна, но не рекомендуется.</li>
+      </ul>
+
+      <div class="tip">
+        <h2>🌱 Начни так</h2>
+        <p>Шаблон структуры любой страницы:</p>
+        <pre>&lt;body&gt;
+  &lt;header&gt;&lt;/header&gt;
+  &lt;nav&gt;&lt;/nav&gt;
+  &lt;main&gt;
+    &lt;h1&gt;Заголовок&lt;/h1&gt;
+    &lt;p&gt;Контент...&lt;/p&gt;
+  &lt;/main&gt;
+  &lt;footer&gt;&lt;/footer&gt;
+&lt;/body&gt;</pre>
+        <p>Это уже на 80% — правильный HTML.</p>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="note">
+        📚 Этот материал — часть серии «Основы веб-разработки от А до Я». 
+        Подписывайтесь на канал <a href="https://t.me/markcodit" class="author-link" target="_blank" rel="noopener noreferrer">@markcodit</a>, 
+        где публикуются:
+        <ul style="margin-top: 12px; padding-left: 20px;">
+          <li>Пошаговые руководства по HTML, CSS, JS</li>
+          <li>Автоматизация рутинных задач</li>
+          <li>Telegram-боты и мини-игры</li>
+          <li>Полезные мемы для поддержания настроения 😊</li>
+        </ul>
+        <p style="margin-top: 12px;">
+          Нужна помощь с вашим проектом? Менеджер: 
+          <a href="https://t.me/programistotbo" class="author-link" target="_blank" rel="noopener noreferrer">@programistotbo</a>
+        </p>
+      </div>
+    </main>
+
+    <footer>
+      <div class="author-box">
+        <div class="author-logo">Ⓜ️</div>
+        <p>Материал подготовил <a href="https://t.me/markcodit" class="author-link" target="_blank" rel="noopener noreferrer">Цецерский Марк</a></p>
+      </div>
+      <p style="margin-top: 16px; font-size: 0.9em; color: var(--text-muted);">
+        Разработка проектов с нуля. Автоматизация, боты, игры + мемы для настроения 🎮
+      </p>
+    </footer>
+  </div>
+</body>
+</html>
+

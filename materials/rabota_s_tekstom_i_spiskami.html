@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="description" content="Как правильно работать с текстом и списками в HTML: заголовки, абзацы, семантика, ul/ol/dl, вложенность, специальные элементы. Учебное руководство для начинающих." />
+  <title>2. Работа с текстом и списками</title>
+  <style>
+    :root {
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      --border-light: #e2e8f0;
+      --accent-pink: #ec4899;
+      --accent-dark: #be185d;
+      --accent-green: #059669;
+      --note-bg: #f1f5f7;
+      --code-bg: #fdf2f8;
+      --code-border: #fbcfe8;
+      --pre-bg: #0f172a;
+      --pre-color: #e2e8f0;
+      --success-bg: #f0fdf4;
+      --warning-bg: #fffbeb;
+      --warning-border: #fde68a;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      --shadow-hover: 0 6px 24px rgba(0, 0, 0, 0.08);
+      --radius: 12px;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      --font-mono: 'SF Mono', 'Courier New', monospace;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-page: #0f172a;
+        --bg-card: #1e293b;
+        --text-main: #f1f5f6;
+        --text-muted: #94a3b8;
+        --text-light: #cbd5e1;
+        --border-light: #334155;
+        --note-bg: #1e293b;
+        --code-bg: #1e1b2d;
+        --code-border: #ec4899;
+        --pre-bg: #020617;
+        --success-bg: #0c2e20;
+        --warning-bg: #292524;
+        --warning-border: #d97706;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      line-height: 1.7;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 40px;
+      box-shadow: var(--shadow);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .container {
+        animation: fadeIn 0.5s ease-out;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    h1 {
+      font-size: 2.3em;
+      font-weight: 800;
+      margin: 0 0 16px;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, var(--accent-pink), var(--accent-dark));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    header p {
+      color: var(--text-muted);
+      margin: 10px 0 0;
+      font-size: 1.15em;
+      font-weight: 500;
+    }
+
+    h2 {
+      font-size: 1.55em;
+      margin: 48px 0 24px;
+      font-weight: 700;
+      color: var(--accent-pink);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    h2::before {
+      content: '';
+      width: 4px;
+      height: 24px;
+      background: linear-gradient(to bottom, var(--accent-pink), var(--accent-dark));
+      border-radius: 2px;
+    }
+
+    h3 {
+      font-size: 1.25em;
+      margin: 32px 0 16px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    p, ul, ol {
+      margin-bottom: 20px;
+      font-size: 1.02em;
+      line-height: 1.7;
+    }
+
+    code {
+      background: var(--code-bg);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.92em;
+      color: var(--accent-dark);
+      border: 1px solid var(--code-border);
+    }
+
+    pre {
+      background: var(--pre-bg);
+      color: var(--pre-color);
+      padding: 24px;
+      border-radius: var(--radius);
+      overflow-x: auto;
+      font-size: 0.95em;
+      margin: 28px 0;
+      line-height: 1.6;
+      font-family: var(--font-mono);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    ul, ol {
+      padding-left: 28px;
+    }
+
+    li {
+      margin-bottom: 10px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin: 32px 0;
+      box-shadow: var(--shadow);
+      transition: all 0.25s ease;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-hover);
+        border-color: var(--accent-pink);
+      }
+    }
+
+    .note {
+      background: var(--note-bg);
+      border-left: 4px solid var(--accent-pink);
+      padding: 24px;
+      border-radius: 0 8px 8px 0;
+      margin: 28px 0;
+      font-size: 1.02em;
+    }
+
+    .tip {
+      background: var(--success-bg);
+      border-left: 4px solid var(--accent-green);
+      padding: 24px;
+      border-radius: 0 8px 8px 0;
+      margin: 28px 0;
+      font-size: 1.02em;
+    }
+
+    .warning {
+      background: var(--warning-bg);
+      border-left: 4px solid var(--warning-border);
+      padding: 24px;
+      border-radius: 0 8px 8px 0;
+      margin: 28px 0;
+      font-size: 1.02em;
+      color: var(--text-main);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 28px 0;
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-light);
+    }
+
+    th, td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    th {
+      background: var(--note-bg);
+      font-weight: 600;
+      color: var(--accent-pink);
+      font-size: 1.02em;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover {
+      background: rgba(236, 72, 153, 0.05);
+    }
+
+    .list-diagram, .tree-diagram {
+      background: var(--note-bg);
+      border-radius: 12px;
+      margin: 24px 0;
+      display: block;
+      border: 1px solid var(--border-light);
+      width: 100%;
+      height: auto;
+    }
+
+    .caption {
+      font-size: 0.92em;
+      color: var(--text-muted);
+      text-align: center;
+      margin: 12px 0 24px;
+      font-style: italic;
+    }
+
+    footer {
+      margin-top: 60px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border-light);
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.95em;
+    }
+
+    .author-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 16px;
+      font-size: 1.05em;
+    }
+
+    .author-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent-pink), var(--accent-dark));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: white;
+      font-size: 1.2em;
+    }
+
+    .author-link {
+      color: var(--accent-pink);
+      text-decoration: none;
+      font-weight: 600;
+      position: relative;
+    }
+
+    .author-link:hover {
+      color: var(--accent-dark);
+    }
+
+    .author-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent-pink);
+      transition: width 0.3s ease;
+    }
+
+    .author-link:hover::after {
+      width: 100%;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border-light);
+      margin: 40px 0;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 24px;
+        border-radius: 12px;
+      }
+
+      h1 {
+        font-size: 1.8em;
+      }
+
+      h2 {
+        font-size: 1.35em;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      h2::before {
+        width: 24px;
+        height: 4px;
+      }
+
+      pre {
+        padding: 18px;
+        font-size: 0.88em;
+      }
+
+      .card, .note, .tip, .warning {
+        padding: 24px;
+      }
+
+      .author-box {
+        flex-direction: column;
+        gap: 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.5em;
+      }
+
+      .container {
+        padding: 16px;
+      }
+
+      pre {
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>2. Работа с текстом и списками</h1>
+      <p>Как структурировать текст так, чтобы его было легко читать — и браузер, и поисковик это поняли</p>
+    </header>
+
+    <main>
+      <p>
+        Текст — сердце любой веб-страницы. Но просто набор слов — это не HTML. Нужно <strong>структурировать</strong> его с помощью тегов, чтобы:
+      </p>
+      <ul>
+        <li>✅ Было удобно читать на телефоне,</li>
+        <li>✅ Поисковые системы понимали, что важно,</li>
+        <li>✅ Люди с нарушениями зрения могли использовать скринридеры.</li>
+      </ul>
+
+      <div class="card">
+        <h2>🔤 Заголовки и абзацы</h2>
+        <p>Используйте заголовки как в книге:</p>
+        <ul>
+          <li><code>&lt;h1&gt;</code> — главный заголовок страницы (обычно один),</li>
+          <li><code>&lt;h2&gt;</code> — раздел,</li>
+          <li><code>&lt;h3&gt;</code> — подраздел и т.д.</li>
+        </ul>
+        <p><strong>Не пропускайте уровни!</strong> После <code>&lt;h1&gt;</code> должен идти <code>&lt;h2&gt;</code>, а не <code>&lt;h4&gt;</code>.</p>
+      </div>
+
+      <h2>💡 Семантика vs Внешний вид</h2>
+      <p>В HTML есть теги, которые выглядят одинаково, но <strong>несут разный смысл</strong>:</p>
+
+      <div class="tip">
+        <strong>Семантические теги — передают смысл:</strong>
+        <ul>
+          <li><code>&lt;strong&gt;Важно!&lt;/strong&gt;</code> → скринридер прочитает с акцентом («ВАЖНО!»),</li>
+          <li><code>&lt;em&gt;Акцент&lt;/em&gt;</code> → изменит интонацию («акцент»).</li>
+        </ul>
+      </div>
+
+      <div class="note">
+        <strong>Визуальные теги — только оформление:</strong>
+        <ul>
+          <li><code>&lt;b&gt;Жирный&lt;/b&gt;</code> → просто жирный шрифт,</li>
+          <li><code>&lt;i&gt;Курсив&lt;/i&gt;</code> → просто наклонный (например, название фильма).</li>
+        </ul>
+      </div>
+
+      <h2>📄 Специальные текстовые элементы</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Тег</th>
+            <th>Назначение</th>
+            <th>Пример</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>&lt;br&gt;</code></td>
+            <td>Перенос строки</td>
+            <td>Строка 1<br>Строка 2</td>
+          </tr>
+          <tr>
+            <td><code>&lt;hr&gt;</code></td>
+            <td>Горизонтальная линия-разделитель</td>
+            <td><hr style="margin: 4px 0; border: none; height: 1px; background: var(--border-light);"></td>
+          </tr>
+          <tr>
+            <td><code>&lt;del&gt;</code></td>
+            <td>Зачёркнутый текст (например, старая цена)</td>
+            <td><del>1 000 ₽</del></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>📋 Три типа списков</h2>
+      <svg class="list-diagram" viewBox="0 0 500 220">
+        <style>
+          .lbox { fill: #e0e7ff; stroke: #93c5fd; rx: 8; stroke-width: 1.5; }
+          .lt { text-anchor: middle; font-family: var(--font-sans); font-size: 14px; fill: #312e81; font-weight: bold; }
+          .ls { font-size: 11px; fill: #475569; }
+        </style>
+        <rect x="20" y="20" width="130" height="180" class="lbox"/>
+        <text x="85" y="50" class="lt">ul</text>
+        <circle cx="45" cy="80" r="4" fill="#ec4899"/>
+        <text x="55" y="85" class="ls">Пункт 1</text>
+        <circle cx="45" cy="110" r="4" fill="#ec4899"/>
+        <text x="55" y="115" class="ls">Пункт 2</text>
+
+        <rect x="180" y="20" width="130" height="180" class="lbox"/>
+        <text x="245" y="50" class="lt">ol</text>
+        <text x="200" y="85" class="ls">1. Первый</text>
+        <text x="200" y="115" class="ls">2. Второй</text>
+
+        <rect x="340" y="20" width="140" height="180" class="lbox"/>
+        <text x="410" y="50" class="lt">dl</text>
+        <text x="410" y="85" class="ls" font-weight="bold">HTML</text>
+        <text x="410" y="105" class="ls">Язык разметки</text>
+      </svg>
+      <p class="caption">ul — маркеры, ol — цифры, dl — термины и описания</p>
+
+      <h3>1. Маркированный список — <code>&lt;ul&gt;</code></h3>
+      <pre>&lt;ul&gt;
+  &lt;li&gt;Яблоко&lt;/li&gt;
+  &lt;li&gt;Банан&lt;/li&gt;
+&lt;/ul&gt;</pre>
+
+      <h3>2. Нумерованный список — <code>&lt;ol&gt;</code></h3>
+      <pre>&lt;ol&gt;
+  &lt;li&gt;Сварить воду&lt;/li&gt;
+  &lt;li&gt;Добавить чай&lt;/li&gt;
+&lt;/ol&gt;</pre>
+
+      <h3>3. Список определений — <code>&lt;dl&gt;</code></h3>
+      <pre>&lt;dl&gt;
+  &lt;dt&gt;CSS&lt;/dt&gt;
+  &lt;dd&gt;Язык стилей для оформления HTML.&lt;/dd&gt;
+&lt;/dl&gt;</pre>
+
+      <h2>🔁 Вложенность списков</h2>
+      <p>Списки можно вкладывать — это идеально подходит для меню, инструкций или иерархий:</p>
+      <pre>&lt;ul&gt;
+  &lt;li&gt;Фрукты
+    &lt;ul&gt;
+      &lt;li&gt;Цитрусовые
+        &lt;ul&gt;
+          &lt;li&gt;Апельсин&lt;/li&gt;
+          &lt;li&gt;Мандарин&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;Ягоды&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</pre>
+
+      <svg class="tree-diagram" viewBox="0 0 500 250">
+        <style>
+          .tree-line { stroke: #be185d; stroke-width: 1.5; }
+          .tree-node { fill: #be185d; }
+          .tree-text { font-family: var(--font-sans); font-size: 12px; fill: var(--text-main); }
+        </style>
+        <text x="250" y="30" text-anchor="middle" class="tree-text" font-weight="bold" font-size="16px">Вложенные списки</text>
+        <circle cx="150" cy="80" r="3" class="tree-node"/>
+        <text x="165" y="85" class="tree-text">Фрукты</text>
+        <circle cx="130" cy="120" r="3" class="tree-node"/>
+        <text x="145" y="125" class="tree-text">Цитрусовые</text>
+        <circle cx="110" cy="160" r="3" class="tree-node"/>
+        <text x="125" y="165" class="tree-text">Апельсин</text>
+        <circle cx="110" cy="190" r="3" class="tree-node"/>
+        <text x="125" y="195" class="tree-text">Мандарин</text>
+        <line x1="130" y1="120" x2="120" y2="160" class="tree-line"/>
+        <line x1="130" y1="120" x2="120" y2="190" class="tree-line"/>
+        <line x1="150" y1="80" x2="130" y2="120" class="tree-line"/>
+        <circle cx="130" cy="140" r="3" class="tree-node"/>
+        <text x="145" y="145" class="tree-text">Ягоды</text>
+        <line x1="150" y1="80" x2="130" y2="140" class="tree-line"/>
+      </svg>
+      <p class="caption">Вложенные списки создают чёткую структуру</p>
+
+      <div class="warning">
+        <h3>🚫 Что нельзя делать</h3>
+        <ul>
+          <li><strong>Нельзя</strong> вкладывать <code>&lt;p&gt;</code> в заголовки:  
+            <code>&lt;h1&gt;&lt;p&gt;Ошибка&lt;/p&gt;&lt;/h1&gt;</code> ❌</li>
+          <li><strong>Нельзя</strong> использовать <code>&lt;li&gt;</code> вне <code>&lt;ul&gt;</code>, <code>&lt;ol&gt;</code> или <code>&lt;dl&gt;</code>.</li>
+          <li><strong>Нельзя</strong> выбирать <code>&lt;ol&gt;</code> только потому, что «нравятся цифры» — если порядок не важен, используйте <code>&lt;ul&gt;</code>.</li>
+        </ul>
+      </div>
+
+      <h2>✅ Советы для теста</h2>
+      <ul>
+        <li><code>&lt;br&gt;</code> и <code>&lt;hr&gt;</code> — самозакрывающиеся теги (закрывающие не нужны).</li>
+        <li><code>&lt;strong&gt;</code> ≠ <code>&lt;b&gt;</code> по смыслу: первый — важность, второй — просто жирный.</li>
+        <li>В <code>&lt;dl&gt;</code> используются только <code>&lt;dt&gt;</code> (термин) и <code>&lt;dd&gt;</code> (описание), <strong>не</strong> <code>&lt;li&gt;</code>.</li>
+        <li>Внутри <code>&lt;li&gt;</code> может быть <strong>любой контент</strong>: абзацы, заголовки, изображения, даже другие списки.</li>
+      </ul>
+
+      <div class="tip">
+        <h2>🧠 Запомни фразу</h2>
+        <p>
+          «<strong>Семантика — это смысл, а не внешний вид.</strong>»  
+          Выбирайте теги не потому, как они выглядят, а потому, <em>что они означают</em>.
+        </p>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="note">
+        📚 Этот материал — часть серии «Основы веб-разработки от А до Я». 
+        Подписывайтесь на канал <a href="https://t.me/markcodit" class="author-link" target="_blank" rel="noopener noreferrer">@markcodit</a>, 
+        где публикуются:
+        <ul style="margin-top: 12px; padding-left: 20px;">
+          <li>Пошаговые руководства по HTML, CSS, JS</li>
+          <li>Автоматизация рутинных задач</li>
+          <li>Telegram-боты и мини-игры</li>
+          <li>Полезные мемы для поддержания настроения 😊</li>
+        </ul>
+        <p style="margin-top: 12px;">
+          Нужна помощь с вашим проектом? Менеджер: 
+          <a href="https://t.me/programistotbo" class="author-link" target="_blank" rel="noopener noreferrer">@programistotbo</a>
+        </p>
+      </div>
+    </main>
+
+    <footer>
+      <div class="author-box">
+        <div class="author-logo">Ⓜ️</div>
+        <p>Материал подготовил <a href="https://t.me/markcodit" class="author-link" target="_blank" rel="noopener noreferrer">Цецерский Марк</a></p>
+      </div>
+      <p style="margin-top: 16px; font-size: 0.9em; color: var(--text-muted);">
+        Разработка проектов с нуля. Автоматизация, боты, игры + мемы для настроения 🎮
+      </p>
+    </footer>
+  </div>
+</body>
+</html>
+

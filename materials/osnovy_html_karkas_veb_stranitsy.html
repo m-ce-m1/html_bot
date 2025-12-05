@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="description" content="Полное руководство по структуре HTML-документа. Обязательные теги, частые ошибки, практические примеры, задания и советы от разработчика. Идеально для подготовки к тестам и изучения веб-разработки с нуля." />
+  <title>1. Основы HTML: каркас веб-страницы</title>
+  <style>
+    :root {
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      --border-light: #e2e8f0;
+      --accent-blue: #4f46e5;
+      --accent-purple: #7e22ce;
+      --accent-green: #059669;
+      --note-bg: #f1f5f7;
+      --code-bg: #f0f4ff;
+      --code-border: #cbd5ff;
+      --pre-bg: #0f172a;
+      --pre-color: #e2e8f0;
+      --success-bg: #f0fdf4;
+      --warning-bg: #fffbeb;
+      --warning-border: #fde68a;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      --shadow-hover: 0 6px 24px rgba(0, 0, 0, 0.08);
+      --radius: 12px;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      --font-mono: 'SF Mono', 'Courier New', monospace;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-page: #0f172a;
+        --bg-card: #1e293b;
+        --text-main: #f1f5f6;
+        --text-muted: #94a3b8;
+        --text-light: #cbd5e1;
+        --border-light: #334155;
+        --note-bg: #1e293b;
+        --code-bg: #1e293b;
+        --code-border: #4f46e5;
+        --pre-bg: #020617;
+        --success-bg: #0c2e20;
+        --warning-bg: #292524;
+        --warning-border: #d97706;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      line-height: 1.7;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 40px;
+      box-shadow: var(--shadow);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .container {
+        animation: fadeIn 0.5s ease-out;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    h1 {
+      font-size: 2.3em;
+      font-weight: 800;
+      margin: 0 0 16px;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    header p {
+      color: var(--text-muted);
+      margin: 10px 0 0;
+      font-size: 1.15em;
+      font-weight: 500;
+    }
+
+    h2 {
+      font-size: 1.55em;
+      margin: 48px 0 24px;
+      font-weight: 700;
+      color: var(--accent-blue);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    h2::before {
+      content: '';
+      width: 4px;
+      height: 24px;
+      background: linear-gradient(to bottom, var(--accent-blue), var(--accent-purple));
+      border-radius: 2px;
+    }
+
+    h3 {
+      font-size: 1.25em;
+      margin: 32px 0 16px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    p, ul, ol {
+      margin-bottom: 20px;
+      font-size: 1.02em;
+      line-height: 1.7;
+      color: var(--text-main);
+    }
+
+    code {
+      background: var(--code-bg);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.92em;
+      color: var(--accent-purple);
+      border: 1px solid var(--code-border);
+    }
+
+    pre {
+      background: var(--pre-bg);
+      color: var(--pre-color);
+      padding: 24px;
+      border-radius: var(--radius);
+      overflow-x: auto;
+      font-size: 0.95em;
+      margin: 28px 0;
+      line-height: 1.6;
+      font-family: var(--font-mono);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    ul, ol {
+      padding-left: 28px;
+    }
+
+    li {
+      margin-bottom: 10px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin: 32px 0;
+      box-shadow: var(--shadow);
+      transition: all 0.25s ease;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-hover);
+        border-color: var(--accent-blue);
+      }
+    }
+
+    .card h2 {
+      margin-top: 0;
+    }
+
+    .note {
+      background: var(--note-bg);
+      border-left: 4px solid var(--accent-blue);
+      padding: 24px;
+      border-radius: 0 8px 8px 0;
+      margin: 28px 0;
+      font-size: 1.02em;
+    }
+
+    .tip {
+      background: var(--success-bg);
+      border-left: 4px solid var(--accent-green);
+      padding: 24px;
+      border-radius: 0 8px 8px 0;
+      margin: 28px 0;
+      font-size: 1.02em;
+    }
+
+    .warning {
+      background: var(--warning-bg);
+      border-left: 4px solid var(--warning-border);
+      padding: 24px;
+      border-radius: 0 8px 8px 0;
+      margin: 28px 0;
+      font-size: 1.02em;
+      color: var(--text-main);
+    }
+
+    .caption {
+      font-size: 0.92em;
+      color: var(--text-muted);
+      text-align: center;
+      margin: 12px 0 24px;
+      font-style: italic;
+    }
+
+    footer {
+      margin-top: 60px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border-light);
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.95em;
+    }
+
+    .author-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 16px;
+      font-size: 1.05em;
+    }
+
+    .author-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: white;
+      font-size: 1.2em;
+      box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+    }
+
+    .author-link {
+      color: var(--accent-blue);
+      text-decoration: none;
+      font-weight: 600;
+      position: relative;
+    }
+
+    .author-link:hover {
+      color: var(--accent-purple);
+    }
+
+    .author-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent-blue);
+      transition: width 0.3s ease;
+    }
+
+    .author-link:hover::after {
+      width: 100%;
+    }
+
+    .html-structure-diagram {
+      background: var(--note-bg);
+      border-radius: 12px;
+      margin: 24px 0;
+      display: block;
+      border: 1px solid var(--border-light);
+      width: 100%;
+      height: auto;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border-light);
+      margin: 40px 0;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 24px;
+        border-radius: 12px;
+      }
+
+      h1 {
+        font-size: 1.8em;
+      }
+
+      h2 {
+        font-size: 1.35em;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      h2::before {
+        width: 24px;
+        height: 4px;
+      }
+
+      pre {
+        padding: 18px;
+        font-size: 0.88em;
+      }
+
+      .card, .note, .tip, .warning {
+        padding: 24px;
+      }
+
+      .author-box {
+        flex-direction: column;
+        gap: 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.5em;
+      }
+
+      .container {
+        padding: 16px;
+      }
+
+      pre {
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>1. Основы HTML: каркас веб-страницы</h1>
+      <p>Всё, что нужно знать, чтобы страница работала правильно — от DOCTYPE до body</p>
+    </header>
+
+    <main>
+      <p>
+        В современной веб-разработке даже сложные приложения начинаются с одной простой структуры. 
+        Эта структура — <strong>каркас HTML-документа</strong>. Без неё браузер не поймёт, как отображать ваш контент. 
+        В этом руководстве вы не просто выучите теги — вы поймёте, <em>почему</em> они обязательны.
+      </p>
+
+      <div class="card">
+        <h2>🔹 Обязательные части HTML5-документа</h2>
+        <p>Любой валидный HTML-файл должен содержать эти 7 элементов:</p>
+        <ol>
+          <li><code>&lt;!DOCTYPE html&gt;</code> — объявляет тип документа (HTML5)</li>
+          <li><code>&lt;html lang="ru"&gt;</code> — корневой элемент со спецификацией языка</li>
+          <li><code>&lt;head&gt;</code> — раздел для метаданных</li>
+          <li><code>&lt;meta charset="UTF-8"&gt;</code> — задаёт кодировку текста</li>
+          <li><code>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</code> — обеспечивает адаптивность</li>
+          <li><code>&lt;title&gt;</code> — название вкладки в браузере</li>
+          <li><code>&lt;body&gt;</code> — контейнер всего видимого содержимого</li>
+        </ol>
+      </div>
+
+      <h2>🏠 Визуальная схема: иерархия HTML</h2>
+      <svg class="html-structure-diagram" viewBox="0 0 400 320">
+        <style>
+          .box { fill: #e0e7ff; stroke: #93c5fd; stroke-width: 1.5; rx:6; }
+          .label { font-family: var(--font-sans); font-size: 14px; fill: #312e81; font-weight: bold; }
+          .mini { font-size: 11px; fill: #475569; }
+          .doctype { fill: #dcfce7; stroke: #86efac; }
+          .head { fill: #fce7f3; stroke: #f9a8d4; }
+          .body { fill: #fef3c7; stroke: #fcd34d; }
+        </style>
+        <rect x="10" y="10" width="380" height="35" class="doctype" rx="6"/>
+        <text x="200" y="32" text-anchor="middle" class="label">!DOCTYPE html</text>
+        
+        <rect x="10" y="55" width="380" height="250" class="box"/>
+        <text x="200" y="80" text-anchor="middle" class="label">html (lang="ru")</text>
+        
+        <rect x="30" y="110" width="160" height="180" class="head" rx="6"/>
+        <text x="110" y="135" text-anchor="middle" class="label">head</text>
+        <text x="110" y="160" text-anchor="middle" class="mini">meta charset="UTF-8"</text>
+        <text x="110" y="180" text-anchor="middle" class="mini">meta viewport</text>
+        <text x="110" y="200" text-anchor="middle" class="mini">title</text>
+        <text x="110" y="220" text-anchor="middle" class="mini">link, style, script...</text>
+        <text x="110" y="240" text-anchor="middle" class="mini">meta (description, author)</text>
+        
+        <rect x="210" y="110" width="160" height="180" class="body" rx="6"/>
+        <text x="290" y="135" text-anchor="middle" class="label">body</text>
+        <text x="290" y="160" text-anchor="middle" class="mini">header, nav</text>
+        <text x="290" y="180" text-anchor="middle" class="mini">main, section, article</text>
+        <text x="290" y="200" text-anchor="middle" class="mini">h1, p, img, ul</text>
+        <text x="290" y="220" text-anchor="middle" class="mini">aside, footer</text>
+        <text x="290" y="240" text-anchor="middle" class="mini">div, span, button...</text>
+      </svg>
+      <p class="caption">Каждый уровень вложенности отражает структуру DOM-дерева</p>
+
+      <h2>📜 Минимальный рабочий HTML-документ</h2>
+      <pre>&lt;!DOCTYPE html&gt;
+&lt;html lang="ru"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+  &lt;title&gt;Моя первая страница&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Привет, мир!&lt;/h1&gt;
+  &lt;p&gt;Этот документ соответствует стандарту HTML5.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+
+      <h2>❗ Почему DOCTYPE — не просто формальность?</h2>
+      <p>
+        Без <code>&lt;!DOCTYPE html&gt;</code> браузер переключается в режим <strong>«Quirks Mode»</strong> — 
+        эмуляцию поведения Internet Explorer 5.5 (2000 год!). Это приводит к:
+      </p>
+      <ul>
+        <li>Неправильному расчёту ширины и высоты блоков,</li>
+        <li>Игнорированию современных CSS-свойств,</li>
+        <li>Разному отображению на разных браузерах.</li>
+      </ul>
+      <div class="warning">
+        ⚠️ Даже одна пропущенная строка может сделать ваш макет неработоспособным на мобильных устройствах.
+      </div>
+
+      <h2>📱 Viewport: мост между десктопом и смартфоном</h2>
+      <p>
+        Тег viewport указывает браузеру, как масштабировать страницу под экран устройства.
+        Без него:
+      </p>
+      <pre>&lt;!-- ❌ Без этого тега --&gt;
+&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</pre>
+      <p>
+        — текст будет мелким, пользователь будет вынужден масштабировать, а интерактивные элементы — перекрываться.
+      </p>
+      <p>
+        С ним — макет «дышит» и подстраивается под любой экран.
+      </p>
+
+      <h2>🔍 Что можно и нельзя размещать в &lt;head&gt;?</h2>
+      <p>Разрешено (метаданные и инструкции):</p>
+      <ul>
+        <li><code>&lt;meta charset&gt;</code>, <code>&lt;meta viewport&gt;</code></li>
+        <li><code>&lt;title&gt;</code></li>
+        <li><code>&lt;base&gt;</code>, <code>&lt;link&gt;</code> (стили, иконки)</li>
+        <li><code>&lt;style&gt;</code>, <code>&lt;script&gt;</code> (лучше в конце <code>&lt;body&gt;</code>)</li>
+        <li><code>&lt;meta name="description"&gt;</code>, <code>&lt;meta name="author"&gt;</code></li>
+      </ul>
+      <p>Запрещено (вызовет ошибку или игнорирование):</p>
+      <ul>
+        <li><code>&lt;div&gt;</code>, <code>&lt;p&gt;</code>, <code>&lt;h1&gt;</code>–<code>&lt;h6&gt;</code></li>
+        <li><code>&lt;img&gt;</code>, <code>&lt;a&gt;</code>, <code>&lt;button&gt;</code></li>
+        <li>Любой элемент, предназначенный для отображения на странице.</li>
+      </ul>
+
+      <div class="note">
+        💡 Помните: <code>&lt;head&gt;</code> — это «черный ящик» для браузера и поисковых систем. 
+        <code>&lt;header&gt;</code> — это видимый блок в верхней части сайта, и он всегда находится внутри <code>&lt;body&gt;</code>.
+      </div>
+
+      <h2>🧠 Практическое задание</h2>
+      <div class="card">
+        <ol>
+          <li>Откройте Блокнот (Windows) или TextEdit (macOS в режиме «Plain Text»).</li>
+          <li>Скопируйте пример из раздела «Минимальный рабочий документ».</li>
+          <li>Сохраните файл как <code>osnovy.html</code> (важно: расширение именно <code>.html</code>).</li>
+          <li>Дважды кликните по файлу — он откроется в браузере.</li>
+          <li>Проверьте: название вкладки, заголовок, отсутствие горизонтального скролла на телефоне.</li>
+        </ol>
+        <p>Если всё работает — вы освоили основу веба.</p>
+      </div>
+
+      <h2>⚙️ Топ-5 ошибок начинающих</h2>
+      <ol>
+        <li><strong>Отсутствует DOCTYPE</strong> → quirks mode.</li>
+        <li><strong>Нет <code>lang</code> у &lt;html&gt;</strong> → проблемы с экранными читалками.</li>
+        <li><strong>Контент в &lt;head&gt;</strong> → браузер может переместить его в <code>&lt;body&gt;</code> автоматически (непредсказуемо).</li>
+        <li><strong>Забыли UTF-8</strong> → вместо «Привет» — «ÐŸÑ€Ð¸Ð²ÐµÑ‚».</li>
+        <li><strong>Нет viewport</strong> → сайт «не адаптивный», плохо работает на телефонах.</li>
+      </ol>
+
+      <div class="tip">
+        ✅ Профессиональный лайфхак: создайте шаблон <code>base.html</code> и копируйте его для каждого нового проекта. Это сэкономит часы времени.
+      </div>
+
+      <h2>✅ Чек-лист для теста или ревью кода</h2>
+      <ul>
+        <li>✅ Первая строка — <code>&lt;!DOCTYPE html&gt;</code></li>
+        <li>✅ <code>&lt;html&gt;</code> имеет атрибут <code>lang</code></li>
+        <li>✅ В <code>&lt;head&gt;</code> есть <code>charset</code> и <code>viewport</code></li>
+        <li>✅ Есть <code>&lt;title&gt;</code> с осмысленным названием</li>
+        <li>✅ Весь контент — внутри <code>&lt;body&gt;</code></li>
+        <li>✅ Нет видимых элементов в <code>&lt;head&gt;</code></li>
+      </ul>
+
+      <div class="divider"></div>
+
+      <div class="tip">
+        📚 Этот материал — часть серии «Основы веб-разработки от А до Я». 
+        Подписывайтесь на канал <a href="https://t.me/markcodit" class="author-link" target="_blank" rel="noopener noreferrer">@markcodit</a>, 
+        где публикуются:
+        <ul style="margin-top: 12px; padding-left: 20px;">
+          <li>Пошаговые руководства по HTML, CSS, JS</li>
+          <li>Автоматизация рутинных задач</li>
+          <li>Telegram-боты и мини-игры</li>
+          <li>Полезные мемы для поддержания настроения 😊</li>
+        </ul>
+        <p style="margin-top: 12px;">
+          Нужна помощь с вашим проектом? Напишите менеджеру: 
+          <a href="https://t.me/programistotbo" class="author-link" target="_blank" rel="noopener noreferrer">@programistotbo</a>
+        </p>
+      </div>
+    </main>
+
+    <footer>
+      <div class="author-box">
+        <div class="author-logo">Ⓜ️</div>
+        <p>Материал подготовил <a href="https://t.me/markcodit" class="author-link" target="_blank" rel="noopener noreferrer">Цецерский Марк</a></p>
+      </div>
+      <p style="margin-top: 16px; font-size: 0.9em; color: var(--text-muted);">
+        Канал о создании проектов с нуля — автоматизация, боты, игры и мемы для настроения.
+      </p>
+    </footer>
+  </div>
+</body>
+</html>
+
